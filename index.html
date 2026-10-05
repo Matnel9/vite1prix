@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vite 1 Prix</title>
+<meta name="description" content="Collez un lien Amazon : Vite 1 Prix trouve le même produit moins cher chez Fnac, Darty et les autres, grâce au code-barres.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Poppins:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* DA sakura de Vite 1 Prix : rose cerisier, vert menthe pour le "1" et le meilleur prix,
+   logo en Permanent Marker. Quelques pétales tombent dans l'en-tête, c'est le seul effet animé. */
+:root {
+  --bg: #FFF0F5;
+  --surface: #FFFFFF;
+  --ink: #3B2832;
+  --muted: #8A6B7A;
+  --line: #F7D6E4;
+  --soft: #FCE7F3;
+  --pink: #FF7AA2;
+  --pink-2: #FF9EBB;
+  --pink-deep: #BE185D;
+  --mint: #34D399;
+  --mint-ink: #0B6E4C;
+  --mint-bg: #E3F9EF;
+  --warn-bg: #FFF1DC;
+  --warn: #93530A;
+  --cut: #D1365F;
+  --on-pink: #FFFFFF;
+  --focus: #BE185D;
+
+  --f-logo: "Permanent Marker", "Comic Sans MS", cursive;
+  --f-display: "Poppins", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --radius: 16px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1C1118; --surface: #281923; --ink: #FBE8F1; --muted: #C9A3B6; --line: #432C39; --soft: #3A2331;
+    --pink: #FF7AA2; --pink-2: #FF9EBB; --pink-deep: #FF9EBB; --mint: #34D399; --mint-ink: #6EE7B7; --mint-bg: #123528;
+    --warn-bg: #3A2A0C; --warn: #F2B85B; --cut: #FF8FA9; --on-pink: #FFFFFF; --focus: #FF9EBB; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1C1118; --surface: #281923; --ink: #FBE8F1; --muted: #C9A3B6; --line: #432C39; --soft: #3A2331;
+  --pink: #FF7AA2; --pink-2: #FF9EBB; --pink-deep: #FF9EBB; --mint: #34D399; --mint-ink: #6EE7B7; --mint-bg: #123528;
+  --warn-bg: #3A2A0C; --warn: #F2B85B; --cut: #FF8FA9; --on-pink: #FFFFFF; --focus: #FF9EBB; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1000px; margin: 0 auto; padding-inline: 20px; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* En-tête rose avec le logo */
+header.top { position: relative; overflow: hidden; background: linear-gradient(135deg, var(--pink-2), var(--pink)); color: var(--on-pink); padding-block: 16px; border-bottom: 4px solid var(--mint); box-shadow: 0 4px 15px rgba(255,122,162,.3); }
+header.top .wrap { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; }
+#petals { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.logo { display: inline-flex; align-items: center; text-decoration: none; color: #fff; font-family: var(--f-logo); font-size: 36px; line-height: 1; text-shadow: 3px 3px 0 rgba(190,24,93,.4); transform: rotate(-3deg); transition: transform .3s cubic-bezier(.175,.885,.32,1.275); }
+.logo:hover { transform: scale(1.06) rotate(2deg); }
+.logo .one { font-family: var(--f-display); font-weight: 900; font-size: 34px; background: var(--mint); color: #fff; width: 54px; height: 54px; display: inline-grid; place-items: center; border-radius: 50%; margin: 0 8px; border: 3px dashed #fff; box-shadow: 0 0 15px rgba(52,211,153,.8), inset 0 0 10px rgba(0,0,0,.1); transform: rotate(12deg); text-shadow: none; }
+.top-note { font-size: 13px; font-weight: 600; background: rgba(255,255,255,.25); padding: 7px 16px; border-radius: 999px; }
+
+/* Recherche */
+.search { padding-block: 44px 24px; }
+.search h1 { font-family: var(--f-display); font-weight: 900; font-size: clamp(30px, 5.4vw, 50px); line-height: 1.08; letter-spacing: -.02em; margin: 0 0 12px; text-wrap: balance; max-width: 20ch; }
+.search h1 mark { background: none; color: var(--pink); }
+.search p.lead { color: var(--muted); font-size: 17px; margin: 0 0 24px; max-width: 58ch; }
+form.go { display: flex; flex-wrap: wrap; border-radius: 14px; box-shadow: 0 8px 20px rgba(190,24,93,.08); }
+form.go input { flex: 1 1 300px; min-width: 0; font: inherit; font-size: 16px; padding: 17px 22px; border: 2px solid transparent; border-radius: 14px 0 0 14px; background: var(--surface); color: var(--ink); }
+form.go input:focus { border-color: var(--pink-2); outline: none; }
+form.go button { font-family: var(--f-display); font-weight: 700; font-size: 16px; padding: 17px 34px; border: 0; border-radius: 0 14px 14px 0; cursor: pointer; background: var(--mint); color: #053B28; box-shadow: -2px 0 15px rgba(52,211,153,.3); transition: background .2s, box-shadow .2s; }
+form.go button:hover { background: #2BB582; box-shadow: -2px 0 20px rgba(52,211,153,.6); }
+form.go button[disabled] { opacity: .65; cursor: progress; }
+@media (max-width: 560px) {
+  form.go { gap: 10px; box-shadow: none; }
+  form.go input, form.go button { border-radius: 14px; flex-basis: 100%; }
+  form.go input { box-shadow: 0 8px 20px rgba(190,24,93,.08); }
+}
+.hint { margin-top: 12px; font-size: 14px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.chip-btn { font: inherit; font-size: 13px; font-weight: 600; border: 1.5px dashed var(--pink); background: transparent; color: var(--pink-deep); border-radius: 999px; padding: 4px 14px; cursor: pointer; }
+.chip-btn:hover { background: var(--soft); }
+.error { margin-top: 14px; padding: 12px 16px; border-radius: 12px; background: var(--warn-bg); color: var(--warn); font-weight: 500; }
+
+/* Résultat */
+.result { padding-block: 8px 44px; display: grid; gap: 18px; }
+.demo-banner { font-size: 13px; padding: 10px 16px; border-radius: 12px; background: var(--soft); color: var(--muted); }
+.demo-banner b { color: var(--pink-deep); }
+.product { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 20px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+.thumb { width: 96px; height: 96px; border-radius: 14px; background: var(--soft); display: grid; place-items: center; overflow: hidden; font-family: var(--f-display); font-weight: 900; font-size: 28px; color: var(--pink); }
+.thumb img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+.product h2 { font-size: 19px; font-weight: 700; margin: 0 0 8px; line-height: 1.3; }
+.meta { color: var(--muted); font-size: 13px; display: flex; gap: 6px 14px; flex-wrap: wrap; align-items: center; }
+.ean { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); background: var(--soft); padding: 4px 10px; border-radius: 10px; }
+.ean svg { height: 26px; width: auto; color: var(--ink); }
+.ean code { font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; }
+
+.board { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 760px) { .board { grid-template-columns: minmax(0, 1fr); } }
+
+/* Carte du meilleur prix, reprend la pastille verte du logo */
+.tag { position: relative; background: linear-gradient(160deg, var(--pink-2), var(--pink)); color: #fff; border-radius: 20px; padding: 22px 22px 22px; box-shadow: 0 12px 28px -14px rgba(190,24,93,.6); }
+.tag .label { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; }
+.tag .label .dot { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--mint); border: 2px dashed #fff; font-weight: 900; font-size: 16px; transform: rotate(12deg); box-shadow: 0 0 10px rgba(52,211,153,.7); }
+.tag .where { font-weight: 700; font-size: 20px; margin-top: 10px; }
+.big { display: flex; align-items: flex-start; font-family: var(--f-display); font-weight: 900; line-height: .9; margin: 8px 0 12px; font-variant-numeric: tabular-nums; text-shadow: 3px 3px 0 rgba(190,24,93,.3); }
+.big .eur { font-size: 72px; letter-spacing: -.04em; }
+.big .side { display: flex; flex-direction: column; font-size: 28px; margin-left: 4px; gap: 6px; }
+.big .side .sym { font-size: 24px; }
+.tag .save { font-weight: 600; font-size: 14px; border-top: 2px dashed rgba(255,255,255,.55); padding-top: 12px; }
+.tag a.cta { display: block; text-align: center; margin-top: 16px; padding: 12px; border-radius: 999px; background: #fff; color: #BE185D; text-decoration: none; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: .04em; transition: transform .2s; }
+.tag a.cta:hover { transform: scale(1.03); }
+
+/* Liste des offres */
+.offers { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.offers h3 { margin: 0; padding: 16px 20px; font-weight: 700; font-size: 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.offers h3 span { color: var(--muted); font-weight: 500; font-size: 13px; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px 16px; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--line); border-left: 5px solid transparent; }
+.row:last-child { border-bottom: 0; }
+.row.is-best { border-left-color: var(--mint); background: var(--mint-bg); }
+.m-name { font-weight: 800; font-size: 17px; }
+.m-sub { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; margin-top: 2px; }
+.pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+.pill.ok { background: var(--mint-bg); color: var(--mint-ink); }
+.row.is-best .pill.ok { background: var(--surface); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.match { background: var(--soft); color: var(--pink-deep); }
+.p { text-align: right; font-variant-numeric: tabular-nums; }
+.p .now { font-family: var(--f-display); font-weight: 900; font-size: 24px; line-height: 1.1; }
+.p .was { font-size: 12px; color: var(--cut); text-decoration: line-through; }
+.p .ship { font-size: 11px; color: var(--muted); }
+.row a.go { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; text-decoration: none; padding: 9px 18px; border-radius: 999px; white-space: nowrap; background: linear-gradient(135deg, var(--pink-2), var(--pink)); color: #fff; box-shadow: 0 4px 10px rgba(255,122,162,.3); transition: transform .2s; }
+.row a.go:hover { transform: scale(1.04); }
+@media (max-width: 520px) { .row { grid-template-columns: minmax(0, 1fr) auto; } .row a.go { grid-column: 1 / -1; text-align: center; } }
+.empty { padding: 20px; color: var(--muted); }
+
+/* Comment ça marche */
+.how { padding-block: 34px; border-top: 1px solid var(--line); }
+.how h2 { font-family: var(--f-display); font-weight: 900; font-size: 26px; margin: 0 0 18px; letter-spacing: -.01em; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; list-style: none; margin: 0; padding: 0; counter-reset: s; }
+@media (max-width: 760px) { .steps { grid-template-columns: minmax(0, 1fr); } }
+.steps li { counter-increment: s; }
+.steps li::before { content: counter(s); display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--pink); color: #fff; font-weight: 900; font-size: 16px; margin-bottom: 10px; border: 2px dashed #fff; box-shadow: 0 0 0 2px var(--pink); }
+.steps b { display: block; margin-bottom: 4px; }
+.steps p { margin: 0; color: var(--muted); font-size: 14px; max-width: 40ch; }
+
+footer { border-top: 1px solid var(--line); padding-block: 22px 34px; color: var(--muted); font-size: 12px; }
+footer p { margin: 0 0 6px; max-width: 75ch; }
+
+/* Confiance, promos, filtre */
+.pill.trust.ok { background: var(--mint); color: #053B28; }
+.pill.trust.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.trust.bad { background: var(--cut); color: #fff; }
+.pill[title] { cursor: help; }
+.row.is-risky { background: repeating-linear-gradient(135deg, transparent 0 10px, var(--soft) 10px 20px); }
+.row.is-risky .now { color: var(--muted); }
+.promos { display: grid; gap: 6px; margin-top: 8px; }
+.promo { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+.code { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: 12px; cursor: pointer; border: 2px dashed var(--pink); background: var(--soft); color: var(--pink-deep); border-radius: 8px; padding: 3px 10px; }
+.code span { font-family: var(--f-mono); font-weight: 500; letter-spacing: .06em; user-select: all; }
+.code small { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.code:hover { background: var(--surface); }
+.code.static { cursor: default; font-weight: 700; }
+.promo-txt { color: var(--ink); }
+.risky-toggle { display: block; width: 100%; font: inherit; font-size: 13px; font-weight: 600; padding: 12px; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+.risky-toggle:hover { color: var(--pink-deep); background: var(--soft); }
+details.criteria { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 20px; font-size: 14px; }
+details.criteria summary { cursor: pointer; font-weight: 700; color: var(--pink-deep); }
+details.criteria ul { margin: 12px 0 8px; padding-left: 20px; display: grid; gap: 4px; }
+details.criteria p { margin: 0; color: var(--muted); max-width: 70ch; }
+
+/* Marchands comparés */
+.coverage { padding-block: 30px; border-top: 1px solid var(--line); }
+.coverage h2 { font-family: var(--f-display); font-weight: 900; font-size: 26px; margin: 0 0 6px; letter-spacing: -.01em; }
+.cov-sub { margin: 0 0 16px; color: var(--muted); font-size: 14px; max-width: 65ch; }
+.cov-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.cov-list li { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; font-weight: 600; font-size: 14px; background: var(--surface); border: 1.5px dashed var(--line); color: var(--muted); }
+.cov-list li.on { border: 1.5px solid var(--mint); color: var(--ink); }
+.cov-list li.on::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 6px var(--mint); }
+.cov-list li small { font-weight: 500; font-size: 11px; color: var(--muted); }
+
+/* Liste de choix après une recherche par nom */
+.choices { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 18px 20px; }
+.choices h3 { margin: 0 0 4px; font-size: 17px; }
+.choices > p { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+.choices ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.choices li { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto auto; gap: 14px; align-items: center; padding: 10px; border-radius: 14px; border: 1px solid var(--line); }
+.choices li:hover { background: var(--soft); }
+.c-thumb { width: 52px; height: 52px; border-radius: 10px; background: var(--soft); overflow: hidden; }
+.c-thumb img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+.c-txt { min-width: 0; display: grid; }
+.c-txt b { font-weight: 600; font-size: 15px; }
+.c-txt span { font-size: 12px; color: var(--muted); }
+.c-price { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.c-price b { font-size: 18px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.c-go { font: inherit; font-weight: 700; font-size: 12px; text-transform: uppercase; border: 0; cursor: pointer; padding: 9px 16px; border-radius: 999px; background: var(--mint); color: #053B28; }
+@media (max-width: 560px) {
+  .choices li { grid-template-columns: 44px minmax(0, 1fr); }
+  .c-thumb { width: 44px; height: 44px; }
+  .c-price, .c-go { grid-column: 2; }
+  .c-go { justify-self: start; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .result.fresh .tag { animation: pop .5s cubic-bezier(.175,.885,.32,1.275); }
+  @keyframes pop { from { transform: scale(.94) rotate(-1.5deg); } to { transform: none; } }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <canvas id="petals" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <a class="logo" href="./" aria-label="Vite 1 Prix, accueil">Vite <span class="one">1</span> Prix</a>
+    <span class="top-note">🌸 Comparé au code-barres près</span>
+  </div>
+</header>
+
+<main>
+  <section class="search">
+    <div class="wrap">
+      <h1>Trouvez. Comparez. <mark>Économisez.</mark></h1>
+      <p class="lead">Tapez le nom d'un produit, son code-barres ou collez un lien Amazon. Vite 1 Prix retrouve exactement le même article chez les marchands vérifiés, avec les promos et codes promo en cours, et vous montre où il coûte le moins cher, livraison comprise.</p>
+      <form class="go" id="form" novalidate>
+        <label for="url" class="sr" hidden>Lien du produit Amazon</label>
+        <input id="url" name="url" type="search" autocomplete="off"
+               placeholder="Nom du produit, code-barres ou lien Amazon" aria-label="Nom du produit, code-barres ou lien Amazon">
+        <button id="btn" type="submit">Trouver le meilleur prix</button>
+      </form>
+      <div class="hint">
+        Essayer avec
+        <button class="chip-btn" type="button" data-example="casque EA-900">un nom de produit</button>
+        <button class="chip-btn" type="button" data-example="3760123450010">un code-barres</button>
+        <button class="chip-btn" type="button" data-example="https://www.amazon.fr/Casque-exemple/dp/B0EXEMPLE1">un lien Amazon</button>
+      </div>
+      <div class="error" id="error" role="alert" hidden></div>
+    </div>
+  </section>
+
+  <section class="result wrap" id="result" aria-live="polite" hidden></section>
+
+  <section class="coverage">
+    <div class="wrap">
+      <h2>Marchands comparés</h2>
+      <p class="cov-sub" id="covSub">Les catalogues sont ajoutés au fur et à mesure de la validation de nos partenariats.</p>
+      <ul class="cov-list" id="covList"></ul>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="wrap">
+      <h2>Comment ça marche</h2>
+      <ol class="steps">
+        <li><b>Vous cherchez un produit</b><p>Par son nom, son code-barres ou un lien Amazon. Si plusieurs modèles correspondent, vous choisissez le bon.</p></li>
+        <li><b>On lit son code-barres</b><p>Chaque produit a un code EAN unique. On compare ce code, pas le nom : pas de confusion entre couleurs, capacités ou accessoires.</p></li>
+        <li><b>On ne garde que les marchands sûrs</b><p>Prix issus des catalogues officiels des enseignes, marchands contrôlés selon des critères européens, promos vérifiées sur 30 jours et codes promo en cours.</p></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Vite 1 Prix peut percevoir une commission lorsque vous achetez via ses liens (liens affiliés). Cela ne change pas le prix que vous payez.</p>
+    <p>En tant que Partenaire Amazon, Vite 1 Prix réalise un bénéfice sur les achats remplissant les conditions requises. Les prix sont indicatifs et mis à jour au moins une fois par jour.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const form = $('form'), input = $('url'), btn = $('btn'), errBox = $('error'), out = $('result');
+  const EXAMPLE = 'https://www.amazon.fr/Casque-exemple/dp/B0EXEMPLE1';
+
+  const money = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+  const fmt = (n) => money.format(n);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const dateFr = (iso) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+
+  // ---------- Lien Amazon → ASIN (même règle que le serveur) ----------
+  function asinFrom(text) {
+    const t = String(text || '').trim();
+    if (/^[A-Z0-9]{10}$/i.test(t)) return t.toUpperCase();
+    const m = t.match(/\/(?:dp|gp\/product|gp\/aw\/d|product)\/([A-Z0-9]{10})(?:[/?#]|$)/i);
+    return m ? m[1].toUpperCase() : null;
+  }
+  const isShortLink = (t) => /^https?:\/\/(www\.)?(amzn\.(eu|to)|a\.co)\//i.test(String(t).trim());
+
+  // ---------- Données d'exemple (quand aucun serveur ne répond) ----------
+  function demoTrust(country, days, ok = true) {
+    return {
+      status: ok ? 'verifie' : 'refuse', demo: true, country: ok ? country : null, labels: [],
+      checks: [
+        { label: 'Établi dans l\'UE', ok },
+        { label: 'TVA européenne valide (VIES)', ok },
+        { label: 'Site en HTTPS', ok: true },
+        { label: `Rétractation ${days} jours`, ok: days >= 14 },
+      ],
+    };
+  }
+  function demoData(asin) {
+    const inTen = new Date(Date.now() + 10 * 86400000).toISOString();
+    const offers = [
+      { merchant: 'SuperDeal24', price: 249.00, oldPrice: 399.00, shipping: 9.90, total: 258.90, url: 'https://example.com/', match: 'ean',
+        trust: demoTrust(null, 7, false), deal: { status: 'baisse', pct: 4, low30: 259, days: 30, misleadingOldPrice: true }, promos: [] },
+      { merchant: 'Fnac', price: 299.99, oldPrice: 349.99, shipping: 0, total: 299.99, url: 'https://www.fnac.com/', match: 'ean',
+        trust: demoTrust('France', 15), deal: { status: 'baisse', pct: 3, low30: 309.99, days: 30, misleadingOldPrice: true }, promos: [] },
+      { merchant: 'Darty', price: 309.00, oldPrice: null, shipping: 4.99, total: 313.99, url: 'https://www.darty.com/', match: 'ean',
+        trust: demoTrust('France', 15), deal: { status: 'stable', pct: null, low30: 309, days: 30, misleadingOldPrice: false },
+        promos: [{ type: 'voucher', code: 'EXEMPLE15', title: '15 € de remise dès 299 € d\'achat', endDate: inTen, url: 'https://www.darty.com/' }] },
+      { merchant: 'LDLC', price: 304.95, oldPrice: 329.95, shipping: 0, total: 304.95, url: 'https://www.ldlc.com/', match: 'ean',
+        trust: demoTrust('France', 14), deal: { status: 'baisse', pct: 3, low30: 314.95, days: 30, misleadingOldPrice: true }, promos: [] },
+      { merchant: 'Rue du Commerce', price: 312.00, oldPrice: null, shipping: 0, total: 312.00, url: 'https://www.rueducommerce.fr/', match: 'ean',
+        trust: demoTrust('France', 14), deal: { status: 'stable', pct: null, low30: 312, days: 30, misleadingOldPrice: false }, promos: [] },
+      { merchant: 'Boulanger', price: 319.00, oldPrice: null, shipping: 0, total: 319.00, url: 'https://www.boulanger.com/', match: 'ean',
+        trust: demoTrust('France', 14), deal: { status: 'stable', pct: null, low30: 319, days: 30, misleadingOldPrice: false }, promos: [] },
+      { merchant: 'Cdiscount', price: 309.99, oldPrice: null, shipping: 9.99, total: 319.98, url: 'https://www.cdiscount.com/', match: 'ean',
+        trust: demoTrust('France', 14), deal: { status: 'inconnu', pct: null, low30: null, days: 0, misleadingOldPrice: false }, promos: [] },
+      { merchant: 'E.Leclerc', price: 324.90, oldPrice: null, shipping: 0, total: 324.90, url: 'https://www.e.leclerc/', match: 'modele',
+        trust: demoTrust('France', 14), deal: { status: 'stable', pct: null, low30: 324.9, days: 30, misleadingOldPrice: false }, promos: [] },
+    ];
+    const amazon = { merchant: 'Amazon', price: 329.99, total: 329.99, url: 'https://www.amazon.fr/dp/' + asin, avg90: 349,
+      trust: demoTrust('Luxembourg', 30), deal: { status: 'stable', pct: null, low30: 319.99, days: 30, misleadingOldPrice: false }, promos: [] };
+    return {
+      demo: true,
+      product: { asin, title: 'Casque sans fil à réduction de bruit (produit d\'exemple)', brand: 'Exemple Audio', model: 'EA-900', ean: '3760123450010', image: null },
+      amazon, offers, best: 'Fnac', savings: 30,
+    };
+  }
+
+  let serverMode = null; // true = notre serveur répond, false = page seule (démo)
+  async function detectServer() {
+    if (serverMode !== null) return serverMode;
+    try {
+      const r = await fetch('api/recherche', { headers: { Accept: 'application/json' } });
+      serverMode = (r.headers.get('content-type') || '').includes('application/json');
+    } catch { serverMode = false; }
+    return serverMode;
+  }
+
+  // ---------- Recherche : lien Amazon, code-barres ou nom de produit ----------
+  const DEMO_EAN = '3760123450010';
+  const DEMO_CHOICES = [
+    { ean: DEMO_EAN, title: 'Casque sans fil EA-900 Noir (produit d\'exemple)', fromPrice: 299.99, merchants: 7 },
+    { ean: '3760123450027', title: 'Casque sans fil EA-900 Blanc (produit d\'exemple)', fromPrice: 279.99, merchants: 1 },
+    { ean: '3760123450034', title: 'Étui de transport pour casque EA-900 (produit d\'exemple)', fromPrice: 24.90, merchants: 1 },
+  ];
+  const normText = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const looksAmazon = (t) => /^https?:\/\//i.test(t) || /amazon\.|amzn\.|a\.co\//i.test(t);
+
+  function demoWithoutAmazon() {
+    const d = demoData('');
+    return { ...d, amazon: null, product: { ...d.product, asin: null } };
+  }
+
+  async function api(params) {
+    const r = await fetch('api/recherche?' + new URLSearchParams(params));
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'La recherche a échoué.');
+    return data;
+  }
+
+  async function query(text) {
+    const t = text.trim();
+    if (await detectServer()) return api({ q: t });
+    // Page seule : on simule les trois types de recherche avec les données d'exemple.
+    if (looksAmazon(t)) {
+      const asin = asinFrom(t);
+      if (asin || isShortLink(t)) return demoData(asin || 'B0EXEMPLE1');
+      throw new Error('Ce lien ne ressemble pas à un lien produit Amazon. Copiez l\'adresse de la page du produit (elle contient /dp/ suivi de 10 caractères).');
+    }
+    const digits = t.replace(/[\s.-]/g, '');
+    if (/^\d{8,14}$/.test(digits)) {
+      if (digits.padStart(13, '0').endsWith(DEMO_EAN)) return demoWithoutAmazon();
+      throw new Error(`Aucun marchand de notre catalogue ne vend ce code-barres (${digits}) pour le moment.`);
+    }
+    const words = normText(t).split(' ').filter((w) => w.length >= 2);
+    const hits = DEMO_CHOICES.filter((c) => words.length && words.every((w) => normText(c.title + ' exemple audio ea900').includes(w)));
+    if (!hits.length) throw new Error(`Aucun produit trouvé pour « ${t} » dans l'aperçu. Essayez « casque EA-900 ».`);
+    return { choices: hits };
+  }
+
+  async function chooseEan(ean) {
+    if (await detectServer()) return api({ ean });
+    if (ean === DEMO_EAN) return demoWithoutAmazon();
+    const c = DEMO_CHOICES.find((x) => x.ean === ean);
+    return {
+      demo: true, amazon: null, best: 'Fnac', savings: 0,
+      product: { asin: null, title: c.title, brand: 'Exemple Audio', model: 'EA-900', ean, image: null },
+      offers: [{ merchant: 'Fnac', price: c.fromPrice, oldPrice: null, shipping: 0, total: c.fromPrice, url: 'https://www.fnac.com/', match: 'ean',
+        trust: demoTrust('France', 15), deal: { status: 'stable', pct: null, low30: c.fromPrice, days: 30, misleadingOldPrice: false }, promos: [] }],
+    };
+  }
+
+  function renderChoices(choices, text) {
+    out.innerHTML = `
+      ${serverMode ? '' : '<div class="demo-banner"><b>Mode démonstration.</b> Résultats d\'exemple.</div>'}
+      <div class="choices">
+        <h3>${choices.length} produits correspondent à « ${esc(text)} »</h3>
+        <p>Choisissez le bon modèle : on compare ensuite exactement ce code-barres chez tous les marchands.</p>
+        <ul>${choices.map((c) => `
+          <li>
+            <div class="c-thumb">${c.image ? `<img src="${esc(c.image)}" alt="" onerror="this.remove()">` : ''}</div>
+            <div class="c-txt"><b>${esc(c.title)}</b><span>EAN ${esc(c.ean)} · ${c.merchants} marchand${c.merchants > 1 ? 's' : ''}</span></div>
+            <div class="c-price">dès <b>${fmt(c.fromPrice)}</b></div>
+            <button type="button" class="c-go" data-ean="${esc(c.ean)}">Comparer</button>
+          </li>`).join('')}</ul>
+      </div>`;
+    out.hidden = false;
+  }
+
+  // ---------- Code-barres EAN-13 dessiné à partir des chiffres ----------
+  const L = ['0001101','0011001','0010011','0111101','0100011','0110001','0101111','0111011','0110111','0001011'];
+  const G = ['0100111','0110011','0011011','0100001','0011101','0111001','0000101','0010001','0001001','0010111'];
+  const R = ['1110010','1100110','1101100','1000010','1011100','1001110','1010000','1000100','1001000','1110100'];
+  const PAR = ['LLLLLL','LLGLGG','LLGGLG','LLGGGL','LGLLGG','LGGLLG','LGGGLL','LGLGLG','LGLGGL','LGGLGL'];
+  function barcode(ean) {
+    if (!/^\d{13}$/.test(ean || '')) return '';
+    const d = ean.split('').map(Number);
+    let bits = '101';
+    const guard = [0, 1, 2, 45, 46, 47, 48, 49, 92, 93, 94];
+    for (let i = 1; i <= 6; i++) bits += (PAR[d[0]][i - 1] === 'L' ? L : G)[d[i]];
+    bits += '01010';
+    for (let i = 7; i <= 12; i++) bits += R[d[i]];
+    bits += '101';
+    let rects = '';
+    for (let x = 0; x < bits.length; x++) {
+      if (bits[x] === '1') rects += `<rect x="${x}" y="0" width="1" height="${guard.includes(x) ? 30 : 26}" fill="currentColor"/>`;
+    }
+    return `<svg viewBox="0 0 95 30" role="img" aria-label="Code-barres ${ean}">${rects}</svg>`;
+  }
+
+  // ---------- Pastilles ----------
+  function trustPill(t) {
+    const detail = t.checks.map((c) => `${c.ok === true ? '✓' : c.ok === false ? '✗' : '?'} ${c.label}`).join('\n');
+    if (t.status === 'verifie') {
+      return `<span class="pill trust ok" title="${esc(detail)}">✓ Marchand vérifié UE${t.country ? ' · ' + esc(t.country) : ''}</span>`;
+    }
+    if (t.status === 'refuse') return `<span class="pill trust bad" title="${esc(detail)}">✗ Non conforme aux critères UE</span>`;
+    return `<span class="pill trust warn" title="${esc(detail)}">Vérification en cours</span>`;
+  }
+
+  function dealPills(o) {
+    const d = o.deal || {};
+    const out = [];
+    if (d.status === 'baisse') out.push(`<span class="pill ok">Vraie baisse : −${d.pct} % vs plus bas des 30 j</span>`);
+    else if (d.status === 'stable') out.push(`<span class="pill match">Plus bas des 30 j : ${fmt(d.low30)}</span>`);
+    if (d.misleadingOldPrice) out.push(`<span class="pill warn" title="Selon la règle européenne, une réduction se calcule à partir du prix le plus bas des 30 derniers jours (${fmt(d.low30)}).">Prix barré au-dessus du plus bas des 30 j</span>`);
+    return out.join('');
+  }
+
+  function promoBlock(o) {
+    if (!o.promos || !o.promos.length) return '';
+    return `<div class="promos">${o.promos.map((p) => `
+      <div class="promo">
+        ${p.code ? `<button type="button" class="code" data-code="${esc(p.code)}" aria-label="Copier le code ${esc(p.code)}"><span>${esc(p.code)}</span><small>Copier</small></button>` : '<span class="code static">Offre</span>'}
+        <span class="promo-txt">${esc(p.title || 'Promotion en cours')}${p.endDate ? ` · jusqu'au ${dateFr(p.endDate)}` : ''}</span>
+      </div>`).join('')}</div>`;
+  }
+
+  function priceParts(n) {
+    const [e, c] = n.toFixed(2).split('.');
+    return `<span class="eur">${Number(e).toLocaleString('fr-FR')}</span><span class="side"><span>,${c}</span><span class="sym">€</span></span>`;
+  }
+
+  function row(o, isBest) {
+    const isAmazon = o.merchant === 'Amazon';
+    const sub = [trustPill(o.trust)];
+    if (!isAmazon) sub.push(o.match === 'ean' ? '<span class="pill match">Même code-barres</span>' : '<span class="pill match">Même référence modèle</span>');
+    sub.push(dealPills(o));
+    const ship = o.shipping ? `+ ${fmt(o.shipping)} livraison` : (isAmazon ? '' : 'Livraison offerte');
+    return `<div class="row${isBest ? ' is-best' : ''}${o.trust.status === 'refuse' ? ' is-risky' : ''}">
+      <div style="min-width:0"><div class="m-name">${esc(o.merchant)}${isBest ? ' · le moins cher' : ''}</div><div class="m-sub">${sub.join('')}</div>${promoBlock(o)}</div>
+      <div class="p"><div class="now">${fmt(o.total)}</div>${o.oldPrice ? `<div class="was">${fmt(o.oldPrice)}</div>` : ''}${ship ? `<div class="ship">${ship}</div>` : ''}</div>
+      <a class="go" href="${esc(o.url)}" target="_blank" rel="noopener sponsored">Voir l'offre</a>
+    </div>`;
+  }
+
+  let last = null;
+  let showRisky = false;
+
+  function render(data) {
+    last = data;
+    const p = data.product;
+    const all = [...data.offers, ...(data.amazon ? [data.amazon] : [])].sort((a, b) => a.total - b.total);
+    const risky = all.filter((o) => o.trust.status === 'refuse');
+    const safe = all.filter((o) => o.trust.status !== 'refuse');
+    const best = all.find((o) => o.merchant === data.best) || null;
+    const initials = (p.brand || p.title || '?').split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+    const promoCount = all.filter((o) => o.trust.status !== 'refuse').reduce((n, o) => n + (o.promos?.length || 0), 0);
+
+    const vsAmazon = data.amazon && best && best.merchant !== 'Amazon'
+      ? `${fmt(data.amazon.total - best.total)} de moins qu'Amazon`
+      : (best && best.merchant === 'Amazon' ? 'Amazon est le moins cher' : '');
+
+    const listed = showRisky ? all : safe;
+
+    out.innerHTML = `
+      ${data.demo ? `<div class="demo-banner"><b>Mode démonstration.</b> Prix, enseignes et code promo d'exemple. Ils seront remplacés par les vrais une fois les flux marchands et la clé Amazon branchés.</div>` : ''}
+      <article class="product">
+        <div class="thumb">${p.image ? `<img src="${esc(p.image)}" alt="" onerror="this.parentNode.textContent='${initials}'">` : initials}</div>
+        <div style="min-width:0">
+          <h2>${esc(p.title)}</h2>
+          <div class="meta">
+            ${p.brand ? `<span>${esc(p.brand)}${p.model ? ' · ' + esc(p.model) : ''}</span>` : ''}
+            ${p.ean ? `<span class="ean">${barcode(p.ean)}<code>EAN ${esc(p.ean)}</code></span>` : '<span>Pas de code EAN : recherche par référence modèle</span>'}
+          </div>
+        </div>
+      </article>
+      ${best ? `
+      <div class="board">
+        <div class="tag">
+          <div class="label"><span class="dot">1</span>Meilleur prix vérifié</div>
+          <div class="where">${esc(best.merchant)}</div>
+          <div class="big" aria-label="${fmt(best.total)}">${priceParts(best.total)}</div>
+          <div class="save">${vsAmazon}${data.savings > 0 ? `<br>Jusqu'à ${fmt(data.savings)} d'écart entre marchands vérifiés` : ''}${promoCount ? `<br>${promoCount} code${promoCount > 1 ? 's' : ''} promo disponible${promoCount > 1 ? 's' : ''}` : ''}</div>
+          <a class="cta" href="${esc(best.url)}" target="_blank" rel="noopener sponsored">Voir chez ${esc(best.merchant)}</a>
+        </div>
+        <div class="offers">
+          <h3>Toutes les offres <span>${safe.length} marchand${safe.length > 1 ? 's' : ''} · livraison comprise</span></h3>
+          ${listed.map((o) => row(o, o === best)).join('')}
+          ${risky.length ? `<button type="button" class="risky-toggle" id="riskyToggle" aria-expanded="${showRisky}">
+            ${showRisky ? 'Masquer' : 'Afficher'} ${risky.length} offre${risky.length > 1 ? 's' : ''} de marchand${risky.length > 1 ? 's' : ''} non conforme${risky.length > 1 ? 's' : ''}
+          </button>` : ''}
+        </div>
+      </div>` : `<div class="offers"><div class="empty">Ce produit n'est pour l'instant référencé chez aucun marchand vérifié de notre catalogue.</div></div>`}
+      <details class="criteria">
+        <summary>Nos critères « Marchand vérifié UE »</summary>
+        <ul>
+          <li><b>Établi dans l'Union européenne</b> : vous bénéficiez du droit européen de la consommation.</li>
+          <li><b>Numéro de TVA européen valide</b>, contrôlé dans le registre officiel VIES de la Commission européenne.</li>
+          <li><b>Site sécurisé en HTTPS</b> avec un certificat valide.</li>
+          <li><b>Droit de rétractation d'au moins 14 jours</b>, le minimum légal dans l'UE pour un achat en ligne.</li>
+        </ul>
+        <p>Les promotions sont jugées selon la règle européenne : une réduction se calcule à partir du prix le plus bas pratiqué pendant les 30 jours précédents.</p>
+      </details>
+    `;
+    out.hidden = false;
+  }
+
+  function show(data) {
+    render(data);
+    out.classList.remove('fresh'); void out.offsetWidth; out.classList.add('fresh');
+  }
+
+  out.addEventListener('click', async (e) => {
+    const toggle = e.target.closest('#riskyToggle');
+    if (toggle) { showRisky = !showRisky; render(last); return; }
+    const code = e.target.closest('.code[data-code]');
+    if (code) {
+      const small = code.querySelector('small');
+      try { await navigator.clipboard.writeText(code.dataset.code); small.textContent = 'Copié'; }
+      catch {
+        const r = document.createRange(); r.selectNodeContents(code.querySelector('span'));
+        const s = getSelection(); s.removeAllRanges(); s.addRange(r); small.textContent = 'Sélectionné';
+      }
+      setTimeout(() => { small.textContent = 'Copier'; }, 1800);
+    }
+  });
+
+  async function run(text, task) {
+    errBox.hidden = true;
+    if (!text.trim() && !task) { errBox.textContent = 'Collez un lien Amazon, ou tapez le nom d\'un produit ou son code-barres.'; errBox.hidden = false; input.focus(); return; }
+    btn.disabled = true; btn.textContent = 'Recherche…';
+    showRisky = false;
+    try {
+      const data = await (task || query(text));
+      if (data.choices) renderChoices(data.choices, text); else show(data);
+    }
+    catch (e) { errBox.textContent = e.message; errBox.hidden = false; }
+    finally { btn.disabled = false; btn.textContent = 'Trouver le meilleur prix'; }
+  }
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); run(input.value); });
+  document.querySelectorAll('[data-example]').forEach((b) => b.addEventListener('click', () => {
+    input.value = b.dataset.example; run(b.dataset.example);
+  }));
+  out.addEventListener('click', (e) => {
+    const go = e.target.closest('.c-go');
+    if (go) run(input.value, chooseEan(go.dataset.ean));
+  });
+
+
+  // ---------- Marchands comparés ----------
+  const PLANNED = [
+    ['Amazon', 'Keepa'], ['Fnac', 'Awin'], ['Darty', 'Awin'], ['Boulanger', 'Effinity'], ['Cdiscount', 'Awin'],
+    ['Rue du Commerce', 'Awin'], ['E.Leclerc', 'Awin'], ['LDLC', 'LDLC'], ['Materiel.net', 'Materiel.net'],
+    ['Electro Dépôt', 'Effinity'], ['Back Market', 'Awin'], ['Cultura', 'Awin'], ['Decathlon', 'Rakuten Advertising'],
+    ['ManoMano', 'Awin'], ['Leroy Merlin', 'Awin'],
+  ];
+  async function loadCoverage() {
+    const list = $('covList'), sub = $('covSub');
+    let items = PLANNED.map(([name]) => ({ name, active: false, offers: 0 }));
+    if (await detectServer()) {
+      try { const r = await fetch('api/marchands'); if (r.ok) items = (await r.json()).merchants; } catch {}
+    }
+    const on = items.filter((m) => m.active).length;
+    if (on) sub.textContent = `${on} marchand${on > 1 ? 's' : ''} comparé${on > 1 ? 's' : ''} en ce moment, ${items.length - on} en cours d'ajout.`;
+    items.sort((a, b) => (b.active - a.active) || a.name.localeCompare(b.name, 'fr'));
+    list.innerHTML = items.map((m) => `<li class="${m.active ? 'on' : ''}">${esc(m.name)}${m.active && m.offers ? ` <small>${m.offers.toLocaleString('fr-FR')} produits</small>` : (m.active ? '' : ' <small>bientôt</small>')}</li>`).join('');
+  }
+  loadCoverage();
+
+  // Page seule (aperçu) : on affiche directement l'exemple pour montrer le résultat.
+  detectServer().then((ok) => { if (!ok) { input.value = EXAMPLE; run(EXAMPLE); } });
+})();
+</script>
+
+<script>
+// Pétales de cerisier dans l'en-tête (désactivés si l'utilisateur réduit les animations)
+(() => {
+  const c = document.getElementById('petals');
+  if (!c || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const ctx = c.getContext('2d');
+  let w, h, dpr; const P = [];
+  function size() { dpr = devicePixelRatio || 1; w = c.clientWidth; h = c.clientHeight; c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  size(); addEventListener('resize', size);
+  const n = Math.max(6, Math.round(w / 90));
+  for (let i = 0; i < n; i++) P.push({ x: Math.random() * w, y: Math.random() * h, r: 4 + Math.random() * 4, s: .25 + Math.random() * .45, a: Math.random() * 6.28, v: (Math.random() - .5) * .02 });
+  function petal(p) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a);
+    ctx.beginPath(); ctx.moveTo(0, -p.r);
+    ctx.bezierCurveTo(p.r, -p.r, p.r, p.r * .6, 0, p.r);
+    ctx.bezierCurveTo(-p.r, p.r * .6, -p.r, -p.r, 0, -p.r);
+    ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.fill(); ctx.restore();
+  }
+  (function loop() {
+    ctx.clearRect(0, 0, w, h);
+    for (const p of P) {
+      p.y += p.s; p.x += Math.sin(p.y / 18) * .35 + .15; p.a += p.v;
+      if (p.y > h + 10) { p.y = -10; p.x = Math.random() * w; }
+      if (p.x > w + 10) p.x = -10;
+      petal(p);
+    }
+    requestAnimationFrame(loop);
+  })();
+})();
+</script>
+</body>
+</html>
